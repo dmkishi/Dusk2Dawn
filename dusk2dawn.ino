@@ -5,9 +5,12 @@
 
 /* Set defaults
  */
+// SF
 float const LATITUDE  =   37.776445;
 float const LONGITUDE = -122.441448;
-
+// Antarctice
+// float const LATITUDE  = -89.9;
+// float const LONGITUDE = -24.8;
 
 
 
@@ -20,13 +23,11 @@ void setup() {
   int timezone = -8;
   bool isDst = true;
 
-  float sunrise = sunriseSet(true, y, m, d, LATITUDE, LONGITUDE, timezone, isDst);
-  float sunset  = sunriseSet(false, y, m, d, LATITUDE, LONGITUDE, timezone, isDst);
+  String sunrise = sunriseSet(true, y, m, d, LATITUDE, LONGITUDE, timezone, isDst);
+  String sunset  = sunriseSet(false, y, m, d, LATITUDE, LONGITUDE, timezone, isDst);
 
-  Serial.println(sunrise);
-  Serial.println(sunset);
-  timeString(sunrise, false);
-  timeString(sunset, false);
+  // timeString(sunrise, false);
+  // timeString(sunset, false);
 }
 
 
@@ -34,20 +35,33 @@ void loop() {}
 
 
 
-/* ================================== MAIN ================================== */
-float sunriseSet(bool isRise, int y, int m, int d, float latitude, float longitude, int timezone, bool dst) {
-  float t = fractionOfCentury(jDay(y, m, d));
 
-  return sunriseSetUTC(isRise, t, latitude, longitude);
+/* ================================== MAIN ================================== */
+String sunriseSet(bool isRise, int y, int m, int d, float latitude, float longitude, int timezone, bool isDst) {
+  float jday, timeUTC, newJday, newTimeUTC, timeLocal;
+
+  jday    = jDay(y, m, d);
+  timeUTC = sunriseSetUTC(isRise, jday, latitude, longitude);
+
+  // I've no idea what the purpose of this is....
+  newJday    = jday + timeUTC / (60 * 24);
+  newTimeUTC = sunriseSetUTC(isRise, newJday, latitude, longitude);
+
+  if (!isnan(newTimeUTC)) {
+    timeLocal = newTimeUTC + (timezone * 60.0);
+    timeLocal += (isDst) ? 60.0 : 0.0;
+    return timeString(timeLocal, 2);
+  }
 }
 
 
-float sunriseSetUTC(bool isRise, float t, float latitude, float longitude) {
+float sunriseSetUTC(bool isRise, float jday, float latitude, float longitude) {
+  float t         = fractionOfCentury(jday);
   float eqTime    = equationOfTime(t);
   float solarDec  = sunDeclination(t);
   float hourAngle = hourAngleSunrise(latitude, solarDec);
 
-  hourAngle = isRise ?: -hourAngle;
+  hourAngle = isRise ? hourAngle : -hourAngle;
   float delta   = longitude + radToDeg(hourAngle);
   float timeUTC = 720 - (4.0 * delta) - eqTime; // in minutes
   return timeUTC;
