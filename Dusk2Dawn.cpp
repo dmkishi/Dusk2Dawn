@@ -1,58 +1,57 @@
-#include <Math.h>
-
-
-
-
-/* Set defaults
+/*  Dusk2Dawn.h
+ *  Get estimate time of sunrise and sunset given a set of coordinates.
+ *  Created by DM Kishi <dm.kishi@gmail.com> on 2017-02-01
+ *  <https://github.com/dmkishi/Dusk2Dawn>
  */
-// SF
-float const LATITUDE  =   37.776445;
-float const LONGITUDE = -122.441448;
-// Antarctice
-// float const LATITUDE  = -89.9;
-// float const LONGITUDE = -24.8;
+
+#include "Arduino.h"
+#include <Math.h>
+#include "TimeLord.h"
 
 
 
-void setup() {
-  Serial.begin(115200);
 
-  int y = 2017;
-  int m = 2;
-  int d = 1;
-  int timezone = -8;
-  bool isDst = true;
-
-  String sunrise = sunriseSet(true, y, m, d, LATITUDE, LONGITUDE, timezone, isDst);
-  String sunset  = sunriseSet(false, y, m, d, LATITUDE, LONGITUDE, timezone, isDst);
-
-  // timeString(sunrise, false);
-  // timeString(sunset, false);
+/******************************************************************************/
+/*                                   PUBLIC                                   */
+/******************************************************************************/
+Dusk2Dawn::Dusk2Dawn(float latitude, float longitude, int timezone) {
+  _latitude  = latitude;
+  _longitude = longitude;
+  _timezone  = timezone;
 }
 
 
-void loop() {}
+int Dusk2Dawn::sunriseMinute(int y, int m, int d, bool isDST) {
+  return sunriseSet(true, y, m, d, isDST);
+}
+
+
+int Dusk2Dawn::sunsetMinute(int y, int m, int d, bool isDST) {
+  return sunriseSet(false, y, m, d, isDST);
+}
 
 
 
 
-/* ================================== MAIN ================================== */
-String sunriseSet(bool isRise, int y, int m, int d, float latitude, float longitude, int timezone, bool isDst) {
+/******************************************************************************/
+/*                                  PRIVATE                                   */
+/******************************************************************************/
+int Dusk2Dawn::sunriseSet(bool isRise, int y, int m, int d, bool isDST) {
   float jday, newJday, timeUTC, newTimeUTC, timeLocal;
   bool  hasSunriseSet;
 
   jday    = jDay(y, m, d);
-  timeUTC = sunriseSetUTC(isRise, jday, latitude, longitude);
+  timeUTC = sunriseSetUTC(isRise, jday, _latitude, _longitude);
 
   // Advance the calculated time by a fraction of itself. I've no idea what the
   // purpose of this is.
   newJday    = jday + timeUTC / (60 * 24);
-  newTimeUTC = sunriseSetUTC(isRise, newJday, latitude, longitude);
+  newTimeUTC = sunriseSetUTC(isRise, newJday, _latitude, _longitude);
 
   hasSunriseSet = !isnan(newTimeUTC);
   if (hasSunriseSet) {
-    timeLocal  = newTimeUTC + (timezone * 60);
-    timeLocal += (isDst) ? 60 : 0;
+    timeLocal  = newTimeUTC + (_timezone * 60);
+    timeLocal += (isDST) ? 60 : 0;
     return timeString(timeLocal, 2);
   } else {
     // We're in the (ant)arctic and there is no sunrise (or sunset) today!
@@ -61,7 +60,7 @@ String sunriseSet(bool isRise, int y, int m, int d, float latitude, float longit
 }
 
 
-float sunriseSetUTC(bool isRise, float jday, float latitude, float longitude) {
+float Dusk2Dawn::sunriseSetUTC(bool isRise, float jday, float latitude, float longitude) {
   float t         = fractionOfCentury(jday);
   float eqTime    = equationOfTime(t);
   float solarDec  = sunDeclination(t);
@@ -70,18 +69,15 @@ float sunriseSetUTC(bool isRise, float jday, float latitude, float longitude) {
   hourAngle = isRise ? hourAngle : -hourAngle;
   float delta   = longitude + radToDeg(hourAngle);
   float timeUTC = 720 - (4 * delta) - eqTime; // in minutes
-Serial.println(timeUTC);  
   return timeUTC;
 }
 
 
-
-
-/* ============================ EQUATION OF TIME ============================ */
+/* ---------------------------- EQUATION OF TIME ---------------------------- */
 /* The difference between mean solar time (as shown by clocks) and apparent
  * solar time (indicated by sundials), which varies with the time of year.
  */
-float equationOfTime(float t) {
+float Dusk2Dawn::equationOfTime(float t) {
   float epsilon = obliquityCorrection(t);
   float l0      = geomMeanLongSun(t);
   float e       = eccentricityEarthOrbit(t);
@@ -105,21 +101,21 @@ float equationOfTime(float t) {
  * of Earth's equator with respect to the ecliptic, or of Earth's rotation axis 
  * to a perpendicular to the ecliptic.
  */
-float  meanObliquityOfEcliptic(float t) {
+float Dusk2Dawn::meanObliquityOfEcliptic(float t) {
   float seconds = 21.448 - t * (46.8150 + t * (0.00059 - t * 0.001813));
   float e0      = 23 + (26 + (seconds / 60)) / 60;
   return e0; // in degrees
 }
 
 
-float eccentricityEarthOrbit(float t) {
+float Dusk2Dawn::eccentricityEarthOrbit(float t) {
   float e = 0.016708634 - t * (0.000042037 + 0.0000001267 * t);
   return e; // unitless
 }
 
 
-/* =========================== SOLAR DECLINATION ============================ */
-float sunDeclination(float t) {
+/* --------------------------- SOLAR DECLINATION ---------------------------- */
+float Dusk2Dawn::sunDeclination(float t) {
   float e      = obliquityCorrection(t);
   float lambda = sunApparentLong(t);
 
@@ -129,7 +125,7 @@ float sunDeclination(float t) {
 }
 
 
-float sunApparentLong(float t) {
+float Dusk2Dawn::sunApparentLong(float t) {
   float o      = sunTrueLong(t);
   float omega  = 125.04 - 1934.136 * t;
   float lambda = o - 0.00569 - 0.00478 * sin(degToRad(omega));
@@ -137,7 +133,7 @@ float sunApparentLong(float t) {
 }
 
 
-float sunTrueLong(float t) {
+float Dusk2Dawn::sunTrueLong(float t) {
   float l0 = geomMeanLongSun(t);
   float c  = sunEqOfCenter(t);
   float O  = l0 + c;
@@ -145,7 +141,7 @@ float sunTrueLong(float t) {
 }
 
 
-float sunEqOfCenter(float t) {
+float Dusk2Dawn::sunEqOfCenter(float t) {
   float m     = geomMeanAnomalySun(t);
   float mrad  = degToRad(m);
   float sinm  = sin(mrad);
@@ -156,8 +152,8 @@ float sunEqOfCenter(float t) {
 }
 
 
-/* =============================== HOUR ANGLE =============================== */
-float hourAngleSunrise(float lat, float solarDec) {
+/* ------------------------------- HOUR ANGLE ------------------------------- */
+float Dusk2Dawn::hourAngleSunrise(float lat, float solarDec) {
   float latRad = degToRad(lat);
   float sdRad  = degToRad(solarDec);
   float HAarg  = (cos(degToRad(90.833)) / (cos(latRad) * cos(sdRad)) - tan(latRad) * tan(sdRad));
@@ -166,9 +162,8 @@ float hourAngleSunrise(float lat, float solarDec) {
 }
 
 
-
-/* ============================ SHARED FUNCTIONS ============================ */
-float obliquityCorrection(float t) {
+/* ---------------------------- SHARED FUNCTIONS ---------------------------- */
+float Dusk2Dawn::obliquityCorrection(float t) {
   float e0    = meanObliquityOfEcliptic(t);
   float omega = 125.04 - 1934.136 * t;
   float e     = e0 + 0.00256 * cos(degToRad(omega));
@@ -176,7 +171,7 @@ float obliquityCorrection(float t) {
 }
 
 
-float geomMeanLongSun(float t) {
+float Dusk2Dawn::geomMeanLongSun(float t) {
   float L0 = 280.46646 + t * (36000.76983 + t * 0.0003032);
   while (L0 > 360) {
     L0 -= 360;
@@ -188,17 +183,16 @@ float geomMeanLongSun(float t) {
 }
 
 
-float geomMeanAnomalySun(float t) {
+float Dusk2Dawn::geomMeanAnomalySun(float t) {
   float M = 357.52911 + t * (35999.05029 - 0.0001537 * t);
   return M; // in degrees
 }
 
 
-
-/* =========================== UTILITY FUNCTIONS ============================ */
+/* --------------------------- UTILITY FUNCTIONS ---------------------------- */
 /* Convert Gregorian calendar date to Julian Day.
  */
-float jDay(int year, int month, int day) {
+float Dusk2Dawn::jDay(int year, int month, int day) {
   if (month <= 2) {
     year  -= 1;
     month += 12;
@@ -211,59 +205,21 @@ float jDay(int year, int month, int day) {
 }
 
 
-/* Return fraction of time elapsed this century, AD 2000–2100 Gregorian calendar.
+/* Return fraction of time elapsed this century, AD 2000–2100.
  *
  * NOTE: 2,451,545 was the Julian day starting at noon UTC on 1 January AD 2000.
  *       36,525 is a Julian century.
  */
-float fractionOfCentury(float jd) {
+float Dusk2Dawn::fractionOfCentury(float jd) {
   return (jd - 2451545) / 36525;
 }
 
 
-/* Convert time in minutes to zero-padded string (HH:MM:SS).
- */
-String timeString(float minutes, bool showSeconds) {
-  float floatHour, floatMinute, floatSec;
-  int   hour, minute, second;
-  
-  if ((minutes >= 0) && (minutes < 1440)) {
-    floatHour   = minutes / 60;
-    floatMinute = 60 * (floatHour - floor(floatHour));
-    floatSec    = 60 * (floatMinute - floor(floatMinute));
-    hour   = (int) floatHour;
-    minute = (int) floatMinute;
-    second = (int) (floatSec + 0.5);
-    
-    if (second > 59) {
-      second = 0;
-      minute += 1;
-    }
-    if (showSeconds && (second >= 30)) {
-      minute++;
-    }
-    if (minute > 59) {
-      minute = 0;
-      hour  += 1;
-    }
-  }
-Serial.println(hour);
-Serial.println(minute);
-//    String output = zeroPad(hour,2) + ":" + zeroPad(minute,2);
-//    if (!showSeconds) output = output + ":" + zeroPad(second,2);
-//  } else { 
-//    var output = "error"
-//  }
-  return "a";
-}
-
-
-float radToDeg(float rad) {
+float Dusk2Dawn::radToDeg(float rad) {
   return 180 * rad / PI;
 }
 
 
-float degToRad(float deg) {
+float Dusk2Dawn::degToRad(float deg) {
   return PI * deg / 180;
 }
-
