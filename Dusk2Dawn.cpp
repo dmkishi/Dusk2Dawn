@@ -1,13 +1,12 @@
-/*  Dusk2Dawn.h
+/*  Dusk2Dawn.cpp
  *  Get estimate time of sunrise and sunset given a set of coordinates.
- *  Created by DM Kishi <dm.kishi@gmail.com> on 2017-02-01
+ *  Created by DM Kishi <dm.kishi@gmail.com> on 2017-02-01.
  *  <https://github.com/dmkishi/Dusk2Dawn>
  */
 
 #include "Arduino.h"
 #include <Math.h>
-#include "TimeLord.h"
-
+#include "Dusk2Dawn.h"
 
 
 
@@ -38,7 +37,6 @@ int Dusk2Dawn::sunsetMinute(int y, int m, int d, bool isDST) {
 /******************************************************************************/
 int Dusk2Dawn::sunriseSet(bool isRise, int y, int m, int d, bool isDST) {
   float jday, newJday, timeUTC, newTimeUTC, timeLocal;
-  bool  hasSunriseSet;
 
   jday    = jDay(y, m, d);
   timeUTC = sunriseSetUTC(isRise, jday, _latitude, _longitude);
@@ -48,15 +46,10 @@ int Dusk2Dawn::sunriseSet(bool isRise, int y, int m, int d, bool isDST) {
   newJday    = jday + timeUTC / (60 * 24);
   newTimeUTC = sunriseSetUTC(isRise, newJday, _latitude, _longitude);
 
-  hasSunriseSet = !isnan(newTimeUTC);
-  if (hasSunriseSet) {
-    timeLocal  = newTimeUTC + (_timezone * 60);
-    timeLocal += (isDST) ? 60 : 0;
-    return timeString(timeLocal, 2);
-  } else {
-    // We're in the (ant)arctic and there is no sunrise (or sunset) today!
-    // DO WHAT
-  }
+  timeLocal  = newTimeUTC + (_timezone * 60);
+  timeLocal += (isDST) ? 60 : 0;
+
+  return timeLocal;
 }
 
 
