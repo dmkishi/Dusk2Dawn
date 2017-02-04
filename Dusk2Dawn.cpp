@@ -13,7 +13,10 @@
 /******************************************************************************/
 /*                                   PUBLIC                                   */
 /******************************************************************************/
-Dusk2Dawn::Dusk2Dawn(float latitude, float longitude, int timezone) {
+/* Though most time zones are offset by whole hours, there are a few zones
+ * offset by 30 or 45 minutes, so the argument must be declared as a float.
+ */
+Dusk2Dawn::Dusk2Dawn(float latitude, float longitude, float timezone) {
   _latitude  = latitude;
   _longitude = longitude;
   _timezone  = timezone;
@@ -36,7 +39,8 @@ int Dusk2Dawn::sunsetMinute(int y, int m, int d, bool isDST) {
 /*                                  PRIVATE                                   */
 /******************************************************************************/
 int Dusk2Dawn::sunriseSet(bool isRise, int y, int m, int d, bool isDST) {
-  float jday, newJday, timeUTC, newTimeUTC, timeLocal;
+  float jday, newJday, timeUTC, newTimeUTC;
+  int timeLocal;
 
   jday    = jDay(y, m, d);
   timeUTC = sunriseSetUTC(isRise, jday, _latitude, _longitude);
@@ -46,8 +50,13 @@ int Dusk2Dawn::sunriseSet(bool isRise, int y, int m, int d, bool isDST) {
   newJday    = jday + timeUTC / (60 * 24);
   newTimeUTC = sunriseSetUTC(isRise, newJday, _latitude, _longitude);
 
-  timeLocal  = newTimeUTC + (_timezone * 60);
-  timeLocal += (isDST) ? 60 : 0;
+  if (!isnan(newTimeUTC)) {
+    timeLocal  = (int) round(newTimeUTC + (_timezone * 60));
+    timeLocal += (isDST) ? 60 : 0;
+  } else {
+    // There is no sunrise or sunset, e.g. it's in the (ant)arctic.
+    timeLocal = -1;
+  }
 
   return timeLocal;
 }
@@ -91,7 +100,7 @@ float Dusk2Dawn::equationOfTime(float t) {
 
 
 /* Obliquity of the ecliptic is the term used by astronomers for the inclination
- * of Earth's equator with respect to the ecliptic, or of Earth's rotation axis 
+ * of Earth's equator with respect to the ecliptic, or of Earth's rotation axis
  * to a perpendicular to the ecliptic.
  */
 float Dusk2Dawn::meanObliquityOfEcliptic(float t) {

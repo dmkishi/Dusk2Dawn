@@ -12,7 +12,7 @@
 
   class Dusk2Dawn {
     public:
-      Dusk2Dawn(float, float, int);
+      Dusk2Dawn(float, float, float);
       int sunriseMinute(int, int, int, bool);
       int sunsetMinute(int, int, int, bool);
     private:
