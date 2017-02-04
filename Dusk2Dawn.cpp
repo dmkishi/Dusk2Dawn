@@ -23,12 +23,12 @@ Dusk2Dawn::Dusk2Dawn(float latitude, float longitude, float timezone) {
 }
 
 
-int Dusk2Dawn::sunriseMinute(int y, int m, int d, bool isDST) {
+int Dusk2Dawn::sunrise(int y, int m, int d, bool isDST) {
   return sunriseSet(true, y, m, d, isDST);
 }
 
 
-int Dusk2Dawn::sunsetMinute(int y, int m, int d, bool isDST) {
+int Dusk2Dawn::sunset(int y, int m, int d, bool isDST) {
   return sunriseSet(false, y, m, d, isDST);
 }
 

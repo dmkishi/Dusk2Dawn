@@ -13,8 +13,8 @@
   class Dusk2Dawn {
     public:
       Dusk2Dawn(float, float, float);
-      int sunriseMinute(int, int, int, bool);
-      int sunsetMinute(int, int, int, bool);
+      int sunrise(int, int, int, bool);
+      int sunset(int, int, int, bool);
     private:
       float _latitude, _longitude;
       int _timezone;
