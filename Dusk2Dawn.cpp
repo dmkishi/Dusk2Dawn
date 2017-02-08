@@ -33,6 +33,63 @@ int Dusk2Dawn::sunset(int y, int m, int d, bool isDST) {
 }
 
 
+/* Convert minutes elapsed since midnight, the figure returned by the public
+ * methods sunrise() and sunset(), to a 24-hour clock format, e.g. "23:00".
+ *
+ * This is done by filling a passed character array, which must be of length 6,
+ * e.g. "12:34\0". In case of an error, the array is written as "ERROR" (which
+ * is coincidently the same length as the clock format.) This is much friendlier
+ * and obvious than having to check the function return, which is still provided
+ * for error handling purposes.
+ *
+ * This function is provided as a static method so that returned minutes can be
+ * worked on before requesting a formatted time. For instance, given the time of
+ * sunrise and sunset, the solar noon can be calculated, at which point it can
+ * be converted to a 24-hour clock format.
+ *
+ * String classes are avoided to keep memory use to a minimum.
+ */
+static bool Dusk2Dawn::min2str(char *str, int minutes) {
+  bool isError = false;
+
+  if (minutes < 0 || minutes >= 1440) {
+    isError = true;
+  }
+
+   float floatHour   = minutes / 60.0;
+   float floatMinute = 60.0 * (floatHour - floor(floatHour));
+   byte  byteHour    = (byte) floatHour;
+   byte  byteMinute  = (byte) floatMinute;
+
+   if (byteMinute > 59) {
+     byteHour   += 1;
+     byteMinute  = 0;
+   }
+
+   char strHour[]   = "00";
+   char strMinute[] = "00";
+
+   // In case of an error, keep passing it down.
+   isError = isError ? isError : !zeroPadTime(strHour, byteHour);
+   isError = isError ? isError : !zeroPadTime(strMinute, byteMinute);
+
+   // This is fugly but I can't think of a better way....
+   if (!isError) {
+     str[0] = strHour[0];
+     str[1] = strHour[1];
+     str[2] = ':';
+     str[3] = strMinute[0];
+     str[4] = strMinute[1];
+   } else {
+     str[0] = 'E';
+     str[1] = 'R';
+     str[2] = 'R';
+     str[3] = 'O';
+     str[4] = 'R';
+   }
+
+   return !isError;
+}
 
 
 /******************************************************************************/
@@ -224,4 +281,17 @@ float Dusk2Dawn::radToDeg(float rad) {
 
 float Dusk2Dawn::degToRad(float deg) {
   return PI * deg / 180;
+}
+
+
+/* Zero-pad a component of time, e.g. 1 → "01", 24 → "24".
+ *
+ * NOTE: Supports integers of up to only two digits.
+ */
+static bool Dusk2Dawn::zeroPadTime(char *str, byte timeComponent) {
+  if (timeComponent >= 100) { return false; }
+
+  str[0] = (floor(timeComponent / 10)) + '0';
+  str[1] = (timeComponent % 10) + '0';
+  return true;
 }

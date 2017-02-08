@@ -1,3 +1,4 @@
 Dusk2Dawn KEYWORD1
-sunriseMinute KEYWORD2
-sunsetMinute KEYWORD2
+sunrise   KEYWORD2
+sunset    KEYWORD2
+min2str   KEYWORD2

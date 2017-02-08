@@ -15,26 +15,28 @@
       Dusk2Dawn(float, float, float);
       int sunrise(int, int, int, bool);
       int sunset(int, int, int, bool);
+      static bool min2str(char*, int);
     private:
       float _latitude, _longitude;
-      int _timezone;
-      int sunriseSet(bool isRise, int y, int m, int d, bool isDST);
-      float sunriseSetUTC(bool isRise, float jday, float latitude, float longitude);
-      float equationOfTime(float t);
-      float meanObliquityOfEcliptic(float t);
-      float eccentricityEarthOrbit(float t);
-      float sunDeclination(float t);
-      float sunApparentLong(float t);
-      float sunTrueLong(float t);
-      float sunEqOfCenter(float t);
-      float hourAngleSunrise(float lat, float solarDec);
-      float obliquityCorrection(float t);
-      float geomMeanLongSun(float t);
-      float geomMeanAnomalySun(float t);
-      float jDay(int year, int month, int day);
-      float fractionOfCentury(float jd);
-      float radToDeg(float rad);
-      float degToRad(float deg);
+      int   _timezone;
+      int   sunriseSet(bool, int, int, int, bool);
+      float sunriseSetUTC(bool, float, float, float);
+      float equationOfTime(float);
+      float meanObliquityOfEcliptic(float);
+      float eccentricityEarthOrbit(float);
+      float sunDeclination(float);
+      float sunApparentLong(float);
+      float sunTrueLong(float);
+      float sunEqOfCenter(float);
+      float hourAngleSunrise(float, float);
+      float obliquityCorrection(float);
+      float geomMeanLongSun(float);
+      float geomMeanAnomalySun(float);
+      float jDay(int, int, int);
+      float fractionOfCentury(float);
+      float radToDeg(float);
+      float degToRad(float);
+      static bool zeroPadTime(char*, byte);
   };
 
 #endif
