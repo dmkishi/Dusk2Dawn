@@ -6,10 +6,13 @@ Given a set of a coordinates, a preferred time zone, and whether Daylight Saving
 
 ## Installation
 ### From the Library Manager
+1. Launch the Arduino IDE and navigate to *Sketch → Include Library → Manage Libraries*.
+2. In the library manager, scroll to *Dusk2Dawn* or enter the name into the search field.
+3. Click on the library, then click on the Install button.
 
 ### From the ZIP file
 1. Download the [ZIP file](https://github.com/dmkishi/Dusk2Dawn/archive/master.zip).
-2. Launch the Arduino IDE, navigate to *Sketch → Include Library → Add .ZIP Library...*. From the prompt, select the ZIP just downloaded.
+2. Launch the Arduino IDE and navigate to *Sketch → Include Library → Add .ZIP Library...*. From the prompt, select the ZIP just downloaded.
 
 More info here: https://www.arduino.cc/en/Guide/Libraries#toc4
 
