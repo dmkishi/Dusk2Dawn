@@ -2,7 +2,7 @@
 
 Minimal Arduino library for sunrise and sunset time.
 
-Given some basic data, such as geographic coordinates and a date, an estimate time of [*apparent* sunrise or sunset](https://www.esrl.noaa.gov/gmd/grad/solcalc/glossary.html#apparentsunrise) is returned in **minutes elapsed since midnight**. The algorithm was taken and ported from the [NOAA Solar Calculator](https://www.esrl.noaa.gov/gmd/grad/solcalc/).
+Given some basic data, such as geographic coordinates and a date, an estimate time of [*apparent* sunrise or sunset](https://www.esrl.noaa.gov/gmd/grad/solcalc/glossary.html#apparentsunrise) is returned in **minutes elapsed since midnight**. This is a paired down port of the [NOAA Solar Calculator](https://www.esrl.noaa.gov/gmd/grad/solcalc/).
 
 ## Installation
 ### From the Library Manager
