@@ -1,5 +1,5 @@
 /*  Dusk2Dawn.cpp
- *  Get estimate time of sunrise and sunset given a set of coordinates.
+ *  Get time of sunrise and sunset.
  *  Created by DM Kishi <dm.kishi@gmail.com> on 2017-02-01.
  *  <https://github.com/dmkishi/Dusk2Dawn>
  */
