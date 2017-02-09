@@ -37,7 +37,7 @@ void setup() {
 
   // A static method converts the returned time to a 24-hour clock format.
   // Arguments are a character array and time in minutes.
-  char time[5];
+  char time[6];
   Dusk2Dawn::min2str(time, laSunrise);
   Serial.println(time); // 06:58
 

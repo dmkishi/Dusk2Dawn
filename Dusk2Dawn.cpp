@@ -80,12 +80,14 @@ static bool Dusk2Dawn::min2str(char *str, int minutes) {
      str[2] = ':';
      str[3] = strMinute[0];
      str[4] = strMinute[1];
+     str[5] = '\0';
    } else {
      str[0] = 'E';
      str[1] = 'R';
      str[2] = 'R';
      str[3] = 'O';
      str[4] = 'R';
+     str[5] = '\0';
    }
 
    return !isError;
