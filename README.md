@@ -86,4 +86,5 @@ Given some basic data, such as geographic coordinates and a date, an estimate ti
 ```
 
 ## History
+- **2017-2-9**: Bug fix.
 - **2017-2-3**: Released.
