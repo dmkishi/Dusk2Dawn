@@ -49,7 +49,7 @@ int Dusk2Dawn::sunset(int y, int m, int d, bool isDST) {
  *
  * String classes are avoided to keep memory use to a minimum.
  */
-static bool Dusk2Dawn::min2str(char *str, int minutes) {
+bool Dusk2Dawn::min2str(char *str, int minutes) {
   bool isError = false;
 
   if (minutes < 0 || minutes >= 1440) {
@@ -290,7 +290,7 @@ float Dusk2Dawn::degToRad(float deg) {
  *
  * NOTE: Supports integers of up to only two digits.
  */
-static bool Dusk2Dawn::zeroPadTime(char *str, byte timeComponent) {
+bool Dusk2Dawn::zeroPadTime(char *str, byte timeComponent) {
   if (timeComponent >= 100) { return false; }
 
   str[0] = (floor(timeComponent / 10)) + '0';
