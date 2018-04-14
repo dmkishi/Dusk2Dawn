@@ -21,13 +21,13 @@ Given some basic data, such as geographic coordinates and a date, an estimate ti
    *
    *  The first two must be in decimal degrees (DD), e.g. 10.001, versus the
    *  more common degrees, minutes, and seconds format (DMS), e.g. 10° 00′ 3.6″.
-   *  The time zone offset can be expressed in decimal fractions in the few
-   *  cases where the zones are offset by 30 or 45 minutes, e.g. "5.75" for
-   *  for Nepal Standard Time.
+   *  The time zone offset can be expressed in float in the few cases where the
+   *  the zones are offset by 30 or 45 minutes, e.g. "5.75" for Nepal Standard
+   *  Time.
    *
-   *  HINT: An easy way to find the longitude and latitude for any arbitrary
-   *  location is to find the spot in Google Maps, right click the place on the
-   *  map, and select "What's here?". At the bottom, you’ll see a card with the
+   *  HINT: An easy way to find the longitude and latitude for any location is
+   *  to find the spot in Google Maps, right click the place on the map, and
+   *  select "What's here?". At the bottom, you’ll see a card with the
    *  coordinates.
    */
   Dusk2Dawn losAngeles(34.0522, -118.2437, -8);
