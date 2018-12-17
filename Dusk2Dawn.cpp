@@ -5,7 +5,6 @@
  */
 
 #include "Arduino.h"
-#include <math.h>
 #include "Dusk2Dawn.h"
 
 
