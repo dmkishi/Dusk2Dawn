@@ -56,8 +56,8 @@ bool Dusk2Dawn::min2str(char *str, int minutes) {
     isError = true;
   }
 
-   float floatHour   = minutes / 60.0;
-   float floatMinute = 60.0 * (floatHour - floor(floatHour));
+   float floatHour   = minutes / 60.0f;
+   float floatMinute = 60.0f * (floatHour - floor(floatHour));
    byte  byteHour    = (byte) floatHour;
    byte  byteMinute  = (byte) floatMinute;
 
@@ -147,14 +147,14 @@ float Dusk2Dawn::equationOfTime(float t) {
   float y = tan(degToRad(epsilon) / 2);
   y *= y;
 
-  float sin2l0 = sin(2.0 * degToRad(l0));
+  float sin2l0 = sin(2.0f * degToRad(l0));
   float sinm   = sin(degToRad(m));
-  float cos2l0 = cos(2.0 * degToRad(l0));
-  float sin4l0 = sin(4.0 * degToRad(l0));
-  float sin2m  = sin(2.0 * degToRad(m));
+  float cos2l0 = cos(2.0f * degToRad(l0));
+  float sin4l0 = sin(4.0f * degToRad(l0));
+  float sin2m  = sin(2.0f * degToRad(m));
 
-  float Etime = y * sin2l0 - 2.0 * e * sinm + 4.0 * e * y * sinm * cos2l0 - 0.5 * y * y * sin4l0 - 1.25 * e * e * sin2m;
-  return radToDeg(Etime) * 4.0; // in minutes of time
+  float Etime = y * sin2l0 - 2.0f * e * sinm + 4.0f * e * y * sinm * cos2l0 - 0.5f * y * y * sin4l0 - 1.25f * e * e * sin2m;
+  return radToDeg(Etime) * 4.0f; // in minutes of time
 }
 
 
@@ -163,14 +163,14 @@ float Dusk2Dawn::equationOfTime(float t) {
  * to a perpendicular to the ecliptic.
  */
 float Dusk2Dawn::meanObliquityOfEcliptic(float t) {
-  float seconds = 21.448 - t * (46.8150 + t * (0.00059 - t * 0.001813));
+  float seconds = 21.448f - t * (46.8150f + t * (0.00059f - t * 0.001813f));
   float e0      = 23 + (26 + (seconds / 60)) / 60;
   return e0; // in degrees
 }
 
 
 float Dusk2Dawn::eccentricityEarthOrbit(float t) {
-  float e = 0.016708634 - t * (0.000042037 + 0.0000001267 * t);
+  float e = 0.016708634f - t * (0.000042037f + 0.0000001267f * t);
   return e; // unitless
 }
 
@@ -188,8 +188,8 @@ float Dusk2Dawn::sunDeclination(float t) {
 
 float Dusk2Dawn::sunApparentLong(float t) {
   float o      = sunTrueLong(t);
-  float omega  = 125.04 - 1934.136 * t;
-  float lambda = o - 0.00569 - 0.00478 * sin(degToRad(omega));
+  float omega  = 125.04f - 1934.136f * t;
+  float lambda = o - 0.00569f - 0.00478f * sin(degToRad(omega));
   return lambda; // in degrees
 }
 
@@ -208,7 +208,7 @@ float Dusk2Dawn::sunEqOfCenter(float t) {
   float sinm  = sin(mrad);
   float sin2m = sin(mrad * 2);
   float sin3m = sin(mrad * 3);
-  float C = sinm * (1.914602 - t * (0.004817 + 0.000014 * t)) + sin2m * (0.019993 - 0.000101 * t) + sin3m * 0.000289;
+  float C = sinm * (1.914602f - t * (0.004817f + 0.000014f * t)) + sin2m * (0.019993f - 0.000101f * t) + sin3m * 0.000289f;
   return C; // in degrees
 }
 
@@ -217,7 +217,7 @@ float Dusk2Dawn::sunEqOfCenter(float t) {
 float Dusk2Dawn::hourAngleSunrise(float lat, float solarDec) {
   float latRad = degToRad(lat);
   float sdRad  = degToRad(solarDec);
-  float HAarg  = (cos(degToRad(90.833)) / (cos(latRad) * cos(sdRad)) - tan(latRad) * tan(sdRad));
+  float HAarg  = (cos(degToRad(90.833f)) / (cos(latRad) * cos(sdRad)) - tan(latRad) * tan(sdRad));
   float HA     = acos(HAarg);
   return HA; // in radians (for sunset, use -HA)
 }
@@ -226,14 +226,14 @@ float Dusk2Dawn::hourAngleSunrise(float lat, float solarDec) {
 /* ---------------------------- SHARED FUNCTIONS ---------------------------- */
 float Dusk2Dawn::obliquityCorrection(float t) {
   float e0    = meanObliquityOfEcliptic(t);
-  float omega = 125.04 - 1934.136 * t;
-  float e     = e0 + 0.00256 * cos(degToRad(omega));
+  float omega = 125.04f - 1934.136f * t;
+  float e     = e0 + 0.00256f * cos(degToRad(omega));
   return e; // in degrees
 }
 
 
 float Dusk2Dawn::geomMeanLongSun(float t) {
-  float L0 = 280.46646 + t * (36000.76983 + t * 0.0003032);
+  float L0 = 280.46646f + t * (36000.76983f + t * 0.0003032f);
   while (L0 > 360) {
     L0 -= 360;
   }
@@ -245,7 +245,7 @@ float Dusk2Dawn::geomMeanLongSun(float t) {
 
 
 float Dusk2Dawn::geomMeanAnomalySun(float t) {
-  float M = 357.52911 + t * (35999.05029 - 0.0001537 * t);
+  float M = 357.52911f + t * (35999.05029f - 0.0001537f * t);
   return M; // in degrees
 }
 
@@ -261,8 +261,8 @@ float Dusk2Dawn::jDay(int year, int month, int day) {
 
   int A = floor(year/100);
   int B = 2 - A + floor(A/4);
-  return floor(365.25 * (year + 4716)) + floor(30.6001 * (month + 1)) +
-         day + B - 1524.5;
+  return floor(365.25f * (year + 4716)) + floor(30.6001f * (month + 1)) +
+         day + B - 1524.5f;
 }
 
 
