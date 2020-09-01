@@ -22,6 +22,31 @@ Dusk2Dawn::Dusk2Dawn(float latitude, float longitude, float timezone) {
   _timezone  = timezone;
 }
 
+/* If no parameters, select someplace in northwest washington state, USA */
+Dusk2Dawn::Dusk2Dawn() {
+  _latitude  =   47.238919f;
+  _longitude = -119.862228f;
+  _timezone  =   -8.0f;
+}
+
+/* Change latitude/longitude/timezone */
+float Dusk2Dawn::get_Latitude(void) {
+  return this->_latitude;
+}
+float Dusk2Dawn::get_Longitude(void) {
+  return this->_longitude;
+}
+float Dusk2Dawn::get_Timezone(void) {
+  return this->_timezone;
+}
+
+bool  Dusk2Dawn::init(float latitude, float longitude, float timezone) {
+  this->_latitude  = latitude;
+  this->_longitude = longitude;
+  this->_timezone  = timezone;
+  return true;
+}
+
 
 int Dusk2Dawn::sunrise(int year, int month, int day, bool isDST) {
   return sunriseSet(true, year, month, day, isDST);
