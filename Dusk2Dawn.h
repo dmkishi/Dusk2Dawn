@@ -12,9 +12,9 @@
 
   class Dusk2Dawn {
     public:
-      Dusk2Dawn(float, float, float);
-      int sunrise(int, int, int, bool);
-      int sunset(int, int, int, bool);
+      Dusk2Dawn(float latitude, float longitude, float timezone);
+      int sunrise(int year, int month, int day, bool isDST);
+      int sunset(int year, int month, int day, bool isDST);
       static bool min2str(char*, int);
     private:
       float _latitude, _longitude;

@@ -23,13 +23,13 @@ Dusk2Dawn::Dusk2Dawn(float latitude, float longitude, float timezone) {
 }
 
 
-int Dusk2Dawn::sunrise(int y, int m, int d, bool isDST) {
-  return sunriseSet(true, y, m, d, isDST);
+int Dusk2Dawn::sunrise(int year, int month, int day, bool isDST) {
+  return sunriseSet(true, year, month, day, isDST);
 }
 
 
-int Dusk2Dawn::sunset(int y, int m, int d, bool isDST) {
-  return sunriseSet(false, y, m, d, isDST);
+int Dusk2Dawn::sunset(int year, int month, int day, bool isDST) {
+  return sunriseSet(false, year, month, day, isDST);
 }
 
 
@@ -97,11 +97,11 @@ bool Dusk2Dawn::min2str(char *str, int minutes) {
 /******************************************************************************/
 /*                                  PRIVATE                                   */
 /******************************************************************************/
-int Dusk2Dawn::sunriseSet(bool isRise, int y, int m, int d, bool isDST) {
+int Dusk2Dawn::sunriseSet(bool isRise, int year, int month, int day, bool isDST) {
   float jday, newJday, timeUTC, newTimeUTC;
   int timeLocal;
 
-  jday    = jDay(y, m, d);
+  jday    = jDay(year, month, day);
   timeUTC = sunriseSetUTC(isRise, jday, _latitude, _longitude);
 
   // Advance the calculated time by a fraction of itself. I've no idea what the
