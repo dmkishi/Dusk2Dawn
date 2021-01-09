@@ -18,7 +18,7 @@
       static bool min2str(char*, int);
     private:
       float _latitude, _longitude;
-      int   _timezone;
+      float    _timezone;
       int   sunriseSet(bool, int, int, int, bool);
       float sunriseSetUTC(bool, float, float, float);
       float equationOfTime(float);
