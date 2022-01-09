@@ -23,13 +23,13 @@ Dusk2Dawn::Dusk2Dawn(float latitude, float longitude, float timezone) {
 }
 
 
-int Dusk2Dawn::sunrise(int y, int m, int d, int dstOffsetMins, float sunAngle) {
-  return sunriseSet(true, y, m, d, dstOffsetMins, sunAngle);
+int Dusk2Dawn::sunrise(int y, int m, int d, bool isDST, float sunAngle) {
+  return sunriseSet(true, y, m, d, isDST, sunAngle);
 }
 
 
-int Dusk2Dawn::sunset(int y, int m, int d, int dstOffsetMins, float sunAngle) {
-  return sunriseSet(false, y, m, d, dstOffsetMins, sunAngle);
+int Dusk2Dawn::sunset(int y, int m, int d, bool isDST, float sunAngle) {
+  return sunriseSet(false, y, m, d, isDST, sunAngle);
 }
 
 
@@ -97,7 +97,7 @@ bool Dusk2Dawn::min2str(char *str, int minutes) {
 /******************************************************************************/
 /*                                  PRIVATE                                   */
 /******************************************************************************/
-int Dusk2Dawn::sunriseSet(bool isRise, int y, int m, int d, int dstOffsetMins, float sunAngle) {
+int Dusk2Dawn::sunriseSet(bool isRise, int y, int m, int d, bool isDST, float sunAngle) {
   float jday, newJday, timeUTC, newTimeUTC;
   int timeLocal;
 
@@ -111,7 +111,7 @@ int Dusk2Dawn::sunriseSet(bool isRise, int y, int m, int d, int dstOffsetMins, f
 
   if (!isnan(newTimeUTC)) {
     timeLocal  = (int) round(newTimeUTC + (_timezone * 60));
-    timeLocal += dstOffsetMins;
+    timeLocal += (isDST) ? 60 : 0;
   } else {
     // There is no sunrise or sunset, e.g. it's in the (ant)arctic.
     timeLocal = -1;
