@@ -40,9 +40,9 @@ hence the package will remain unlicensed. *Use at your own risk!*
   /*  Available methods are sunrise() and sunset(). Arguments are year, month,
    *  day, and if Daylight Saving Time is in effect.
    */
-  int laSunrise  = losAngeles.sunrise(2017, 12, 31, false);
-  int laSunset   = losAngeles.sunset(2017, 12, 31, false);
-  int antSunrise = antarctica.sunrise(2017, 6, 30, true);
+  int laSunrise  = losAngeles.sunrise(2017, 12, 31, false, RiseTypes::STANDARD);
+  int laSunset   = losAngeles.sunset(2017, 12, 31, false, RiseTypes::STANDARD);
+  int antSunrise = antarctica.sunrise(2017, 6, 30, true, RiseTypes::STANDARD);
 
 
   /*  Time is returned in minutes elapsed since midnight. If no sunrises or
