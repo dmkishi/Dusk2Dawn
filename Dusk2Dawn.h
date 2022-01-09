@@ -14,8 +14,8 @@
   class Dusk2Dawn {
     public:
       Dusk2Dawn(float, float, float);
-      int sunrise(int, int, int, bool);
-      int sunset(int, int, int, bool);
+      int sunrise(int, int, int, int, float);
+      int sunset(int, int, int, int, float);
       static bool min2str(char*, int);
     private:
       float _latitude, _longitude;
