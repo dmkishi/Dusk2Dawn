@@ -23,13 +23,13 @@ Dusk2Dawn::Dusk2Dawn(float latitude, float longitude, float timezone) {
 }
 
 
-int Dusk2Dawn::sunrise(int y, int m, int d, bool isDST) {
-  return sunriseSet(true, y, m, d, isDST);
+int Dusk2Dawn::sunrise(int y, int m, int d, bool isDST, float sunAngle) {
+  return sunriseSet(true, y, m, d, isDST, sunAngle);
 }
 
 
-int Dusk2Dawn::sunset(int y, int m, int d, bool isDST) {
-  return sunriseSet(false, y, m, d, isDST);
+int Dusk2Dawn::sunset(int y, int m, int d, bool isDST, float sunAngle) {
+  return sunriseSet(false, y, m, d, isDST, sunAngle);
 }
 
 
@@ -97,17 +97,17 @@ bool Dusk2Dawn::min2str(char *str, int minutes) {
 /******************************************************************************/
 /*                                  PRIVATE                                   */
 /******************************************************************************/
-int Dusk2Dawn::sunriseSet(bool isRise, int y, int m, int d, bool isDST) {
+int Dusk2Dawn::sunriseSet(bool isRise, int y, int m, int d, bool isDST, float sunAngle) {
   float jday, newJday, timeUTC, newTimeUTC;
   int timeLocal;
 
   jday    = jDay(y, m, d);
-  timeUTC = sunriseSetUTC(isRise, jday, _latitude, _longitude);
+  timeUTC = sunriseSetUTC(isRise, jday, _latitude, _longitude, sunAngle);
 
   // Advance the calculated time by a fraction of itself. I've no idea what the
   // purpose of this is.
   newJday    = jday + timeUTC / (60 * 24);
-  newTimeUTC = sunriseSetUTC(isRise, newJday, _latitude, _longitude);
+  newTimeUTC = sunriseSetUTC(isRise, newJday, _latitude, _longitude, sunAngle);
 
   if (!isnan(newTimeUTC)) {
     timeLocal  = (int) round(newTimeUTC + (_timezone * 60));
@@ -121,11 +121,11 @@ int Dusk2Dawn::sunriseSet(bool isRise, int y, int m, int d, bool isDST) {
 }
 
 
-float Dusk2Dawn::sunriseSetUTC(bool isRise, float jday, float latitude, float longitude) {
+float Dusk2Dawn::sunriseSetUTC(bool isRise, float jday, float latitude, float longitude, float sunAngle) {
   float t         = fractionOfCentury(jday);
   float eqTime    = equationOfTime(t);
   float solarDec  = sunDeclination(t);
-  float hourAngle = hourAngleSunrise(latitude, solarDec);
+  float hourAngle = hourAngleSunrise(latitude, solarDec, sunAngle);
 
   hourAngle = isRise ? hourAngle : -hourAngle;
   float delta   = longitude + radToDeg(hourAngle);
@@ -214,10 +214,10 @@ float Dusk2Dawn::sunEqOfCenter(float t) {
 
 
 /* ------------------------------- HOUR ANGLE ------------------------------- */
-float Dusk2Dawn::hourAngleSunrise(float lat, float solarDec) {
+float Dusk2Dawn::hourAngleSunrise(float lat, float solarDec, float sunAngle) {
   float latRad = degToRad(lat);
   float sdRad  = degToRad(solarDec);
-  float HAarg  = (cos(degToRad(90.833)) / (cos(latRad) * cos(sdRad)) - tan(latRad) * tan(sdRad));
+  float HAarg  = (cos(degToRad(sunAngle)) / (cos(latRad) * cos(sdRad)) - tan(latRad) * tan(sdRad));
   float HA     = acos(HAarg);
   return HA; // in radians (for sunset, use -HA)
 }

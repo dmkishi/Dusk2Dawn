@@ -9,18 +9,19 @@
 
   #include "Arduino.h"
   #include <math.h>
+  #include <RiseTypes.h>
 
   class Dusk2Dawn {
     public:
       Dusk2Dawn(float, float, float);
-      int sunrise(int, int, int, bool);
-      int sunset(int, int, int, bool);
+      int sunrise(int, int, int, bool, float);
+      int sunset(int, int, int, bool, float);
       static bool min2str(char*, int);
     private:
       float _latitude, _longitude;
       int   _timezone;
-      int   sunriseSet(bool, int, int, int, bool);
-      float sunriseSetUTC(bool, float, float, float);
+      int   sunriseSet(bool, int, int, int, bool, float);
+      float sunriseSetUTC(bool, float, float, float, float);
       float equationOfTime(float);
       float meanObliquityOfEcliptic(float);
       float eccentricityEarthOrbit(float);
@@ -28,7 +29,7 @@
       float sunApparentLong(float);
       float sunTrueLong(float);
       float sunEqOfCenter(float);
-      float hourAngleSunrise(float, float);
+      float hourAngleSunrise(float, float, float);
       float obliquityCorrection(float);
       float geomMeanLongSun(float);
       float geomMeanAnomalySun(float);
