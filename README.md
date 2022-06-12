@@ -1,4 +1,4 @@
-This fork is to fix the type of the variable _timezone to float. This will allow the management of fractional timezone in the Sunfy328 project.  
+This fork is to fix the type of the variable _timezone to float. This will allow the management of fractional timezones in the Sunfy328 project.  
 https://github.com/Ipposnif/Sunfy328  
   
 ==============================================================================
