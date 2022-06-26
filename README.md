@@ -1,3 +1,7 @@
+This fork is to change the type of the variable _timezone to float. This fix allows the management of fractional timezones in the Sunfy328 project.  
+https://github.com/Ipposnif/Sunfy328  
+  
+==============================================================================
 # Dusk2Dawn
 
 Minimal Arduino library for sunrise and sunset time.
